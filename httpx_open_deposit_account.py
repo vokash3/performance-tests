@@ -59,9 +59,9 @@ def open_deposit_account():
     except ValueError:
         deposit_json = {"error": "NO JSON!", "text": resp_post_open_deposit.text}
     print("Ответ JSON:", deposit_json)
-    print("=============================")
-    print(f"Сообщения в Кафке – {KAFKA_MSG}")
 
 
 if __name__ == "__main__":
     open_deposit_account()
+    print("=============================")
+    print(f"Сообщения в Кафке – {KAFKA_MSG}")
