@@ -53,7 +53,7 @@ def open_deposit_account():
 
     print("\n*** Открытие депозитного счёта ***")
     print("Status:", resp_post_open_deposit.status_code)
-    assert resp_post_create_user.status_code == 200, "Ошибка при открытии депозитного счёта"
+    assert resp_post_open_deposit.status_code == 200, "Ошибка при открытии депозитного счёта"
     try:
         deposit_json = resp_post_open_deposit.json()
     except ValueError:
