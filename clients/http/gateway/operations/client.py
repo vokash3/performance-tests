@@ -238,7 +238,7 @@ if __name__ == "__main__":
         user_data = create_user_resp.json()
         user_id = user_data.get("id") or user_data.get("user", {}).get("id")
         print("*** Создан пользователь с ID:", user_id, "*** \n")
-        print(JSONOutput().get_json(user_data))
+        print(JSONOutput.get_json(user_data))
 
         # 2. Открытие дебетового счёта/карты
         from clients.http.gateway.accounts.client import OpenDebitCardAccountRequestDict
@@ -252,7 +252,7 @@ if __name__ == "__main__":
         account_id = debit_data.get("account", {}).get("id")
         card_id = random.choice(debit_data.get("account", {}).get("cards", {})).get("id")
         print("*** Открыт дебетовый счёт с ID:", account_id, "и карта с ID:", card_id, "*** \n")
-        print(JSONOutput().get_json(debit_data))
+        print(JSONOutput.get_json(debit_data))
 
         # 3. Операция пополнения
         top_up_request: MakeTopUpOperationRequestDict = {

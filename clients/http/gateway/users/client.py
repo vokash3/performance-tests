@@ -1,4 +1,3 @@
-import time
 from typing import TypedDict
 
 from httpx import Response

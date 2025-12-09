@@ -199,3 +199,66 @@ __Отдельный тестовый стенд развёрнут на вир�
         
         {'receipt': {'url': 'http://localhost:3000/documents/receipt_7f7aead2-6db7-442a-a262-a9f6c12f85b5.pdf', 'document': '7f7aead2-6db7-442a-a262-a9f6c12f85b5'}}
       ```
+
+## Task 7.5 – Практика использования HTTP API-клиентов: получение документов по счету (Documents)
+
+<img src="https://i.pinimg.com/736x/f6/f8/26/f6f82627bd1ddad1e00d716917f1960a.jpg" alt="Task" height="50" width="50">
+
+- Запускаем **api_client_get_documents.py**
+  ```bash
+  python api_client_get_documents.py
+  ```
+
+    - ### Пример успешного выполнения:
+      ```
+        Create user response: {
+            "user": {
+                "email": "user_1765275266.360575@example.com",
+                "firstName": "Сидор",
+                "id": "7a6e5202-8d4b-4f6f-9af3-39c33e2557b9",
+                "lastName": "Сысоев",
+                "middleName": "Витальевич",
+                "phoneNumber": "8 979 050 96 80"
+            }
+        }
+        Open credit card account response: {
+            "account": {
+                "balance": 25000.0,
+                "cards": [
+                    {
+                        "accountId": "7f6f6a4a-5949-4f23-9472-ffd4264b8a3d",
+                        "cardHolder": "Сидор Сысоев",
+                        "cardNumber": "30565401651043",
+                        "cvv": "882",
+                        "expiryDate": "2032-12-07",
+                        "id": "5f037ee5-9c0f-4585-9e68-4f4180ea2728",
+                        "paymentSystem": "MASTERCARD",
+                        "pin": "3314",
+                        "status": "ACTIVE",
+                        "type": "VIRTUAL"
+                    },
+                    {
+                        "accountId": "7f6f6a4a-5949-4f23-9472-ffd4264b8a3d",
+                        "cardHolder": "Сидор Сысоев",
+                        "cardNumber": "213170423497134",
+                        "cvv": "717",
+                        "expiryDate": "2032-12-07",
+                        "id": "bf634e38-eac5-417a-a76b-a89a4e0307bd",
+                        "paymentSystem": "MASTERCARD",
+                        "pin": "0887",
+                        "status": "ACTIVE",
+                        "type": "PHYSICAL"
+                    }
+                ],
+                "id": "7f6f6a4a-5949-4f23-9472-ffd4264b8a3d",
+                "status": "ACTIVE",
+                "type": "CREDIT_CARD"
+            }
+        }
+        Get tariff document response: {
+            "tariff": {
+                "document": "Debate look economic mouth notice yet suddenly his.",
+                "url": "http://localhost:3000/documents/tariff_7f6f6a4a-5949-4f23-9472-ffd4264b8a3d.pdf"
+            }
+        }
+      ```
