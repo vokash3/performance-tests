@@ -2,7 +2,7 @@
 
 <img src="https://cdn.stepik.net/media/cache/images/courses/242935/cover_cE4uVIf/46ed8cc5a9b8982bd8e91ff34374a376.png" alt="Course cover" height="230" width="230">
 
-Проект для взаимодействие с тестовой банковской системой в
+Проект для взаимодействия с тестовой банковской системой в
 рамках [курса Никиты Филонова на Stepik](https://stepik.org/242935).
 
 _Проверено на Python3.12._
