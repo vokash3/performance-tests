@@ -37,7 +37,7 @@ class OperationsSummaryDict(TypedDict):
     cashbackAmount: float
 
 
-class GetOperationsSummaruResponseDict(TypedDict):
+class GetOperationsSummaryResponseDict(TypedDict):
     summary: OperationsSummaryDict
 
 
@@ -261,11 +261,11 @@ class OperationsGatewayHTTPClient(HTTPClient):
         """
         return self.get("/api/v1/operations/operations-summary", params=QueryParams(**query))
 
-    def get_operations_summary(self, account_id: str) -> GetOperationsSummaruResponseDict:
+    def get_operations_summary(self, account_id: str) -> GetOperationsSummaryResponseDict:
         """
         WRAPPER: Выполняет GET-запрос для получения статистики по операциям по указанному счёту.
         :param account_id: str – Идентификатор счёта. (например, "6bf8c921-7ce3-4a17-a201-96180a10842f")
-        :return: JSON -> GetOperationsSummaruResponseDict
+        :return: JSON -> GetOperationsSummaryResponseDict
         """
         request = GetOperationsSummaryQueryDict(accountId=account_id)
         response = self.get_operations_summary_api(request)
@@ -436,7 +436,7 @@ class OperationsGatewayHTTPClient(HTTPClient):
 # Добавляем builder для OperationsGatewayHTTPClient – 7.5
 def build_operations_gateway_http_client() -> OperationsGatewayHTTPClient:
     """
-    Функция создаёт экземпляр DocumentsGatewayHTTPClient с уже настроенным HTTP-клиентом.
+    Функция создаёт экземпляр OperationsGatewayHTTPClient с уже настроенным HTTP-клиентом.
 
     :return: Готовый к использованию DocumentsGatewayHTTPClient.
     """
@@ -485,7 +485,12 @@ if __name__ == "__main__":
         open_debit_resp.raise_for_status()
         debit_data = open_debit_resp.json()
         account_id = debit_data.get("account", {}).get("id")
-        card_id = random.choice(debit_data.get("account", {}).get("cards", {})).get("id")
+        cards = debit_data.get("account", {}).get("cards") or []
+        if not cards:
+            raise RuntimeError("NO CARDS!")
+
+        card = random.choice(cards)
+        card_id = card["id"]
         print("*** Открыт дебетовый счёт с ID:", account_id, "и карта с ID:", card_id, "*** \n")
         print(JSONOutput.get_json(debit_data))
 

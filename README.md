@@ -200,6 +200,8 @@ __Отдельный тестовый стенд развёрнут на вир�
         {'receipt': {'url': 'http://localhost:3000/documents/receipt_7f7aead2-6db7-442a-a262-a9f6c12f85b5.pdf', 'document': '7f7aead2-6db7-442a-a262-a9f6c12f85b5'}}
       ```
 
+---
+
 ## Task 7.5 – Практика использования HTTP API-клиентов: получение документов по счету (Documents)
 
 <img src="https://i.pinimg.com/736x/f6/f8/26/f6f82627bd1ddad1e00d716917f1960a.jpg" alt="Task" height="50" width="50">
@@ -259,6 +261,77 @@ __Отдельный тестовый стенд развёрнут на вир�
             "tariff": {
                 "document": "Debate look economic mouth notice yet suddenly his.",
                 "url": "http://localhost:3000/documents/tariff_7f6f6a4a-5949-4f23-9472-ffd4264b8a3d.pdf"
+            }
+        }
+      ```
+
+---
+
+## Task 7.5 – Практика использования HTTP API-клиентов: создание операции пополнения счета (Operations)
+
+<img src="https://i.pinimg.com/736x/f6/f8/26/f6f82627bd1ddad1e00d716917f1960a.jpg" alt="Task" height="50" width="50">
+
+- Запускаем **api_client_make_top_up_operation.py**
+  ```bash
+  python api_client_make_top_up_operation.py
+  ```
+
+    - ### Пример успешного выполнения:
+      ```
+        Create user response: {
+            "user": {
+                "email": "user_1765283214.914686@example.com",
+                "firstName": "Олимпий",
+                "id": "1c95577c-4283-48cb-91db-ac72438c31ed",
+                "lastName": "Копылов",
+                "middleName": "Владленович",
+                "phoneNumber": "8 407 287 17 84"
+            }
+        }
+        Open debit card account response: {
+            "account": {
+                "balance": 0.0,
+                "cards": [
+                    {
+                        "accountId": "14d52946-004a-41f3-9e7f-ca44a202f918",
+                        "cardHolder": "Олимпий Копылов",
+                        "cardNumber": "6011147407731903",
+                        "cvv": "242",
+                        "expiryDate": "2032-12-07",
+                        "id": "0e5cbb61-c98c-43d1-b1cd-c30959617dc7",
+                        "paymentSystem": "MASTERCARD",
+                        "pin": "7057",
+                        "status": "ACTIVE",
+                        "type": "VIRTUAL"
+                    },
+                    {
+                        "accountId": "14d52946-004a-41f3-9e7f-ca44a202f918",
+                        "cardHolder": "Олимпий Копылов",
+                        "cardNumber": "30464668099940",
+                        "cvv": "721",
+                        "expiryDate": "2032-12-07",
+                        "id": "03d40f8d-6685-480b-aa09-083e81c91d05",
+                        "paymentSystem": "MASTERCARD",
+                        "pin": "1789",
+                        "status": "ACTIVE",
+                        "type": "PHYSICAL"
+                    }
+                ],
+                "id": "14d52946-004a-41f3-9e7f-ca44a202f918",
+                "status": "ACTIVE",
+                "type": "DEBIT_CARD"
+            }
+        }
+        Make top up operation response: {
+            "operation": {
+                "accountId": "14d52946-004a-41f3-9e7f-ca44a202f918",
+                "amount": 55.77,
+                "cardId": "0e5cbb61-c98c-43d1-b1cd-c30959617dc7",
+                "category": "money_in",
+                "createdAt": "2025-12-09T12:26:55.484703",
+                "id": "dab0b57c-7fbd-419a-aa68-f2201529f11c",
+                "status": "COMPLETED",
+                "type": "TOP_UP"
             }
         }
       ```
