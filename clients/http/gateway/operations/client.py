@@ -6,6 +6,7 @@ import httpx
 from httpx import Response, QueryParams
 
 from clients.http.client import HTTPClient
+from clients.http.gateway.client import build_gateway_http_client
 from clients.http.gateway.users.client import CreateUserRequestDict
 from helpers.json_output import JSONOutput
 from helpers.users.FakeUser import FakeUserFactory
@@ -206,6 +207,50 @@ class OperationsGatewayHTTPClient(HTTPClient):
         :return: Объект httpx.Response с результатом создания операции.
         """
         return self.post("/api/v1/operations/make-cash-withdrawal-operation", json=request)
+
+    # Врапперы – 7.5
+    def get_operation(self):
+        pass
+
+    def get_operation_receipt(self):
+        pass
+
+    def get_operations(self):
+        pass
+
+    def get_operations_summary(self):
+        pass
+
+    def make_fee_operation(self):
+        pass
+
+    def make_top_up_operation(self):
+        pass
+
+    def make_cashback_operation(self):
+        pass
+
+    def make_transfer_operation(self):
+        pass
+
+    def make_purchase_operation(self):
+        pass
+
+    def make_bill_payment_operation(self):
+        pass
+
+    def make_cash_withdrawal_operation(self):
+        pass
+
+
+# Добавляем builder для OperationsGatewayHTTPClient – 7.5
+def build_operations_gateway_http_client() -> OperationsGatewayHTTPClient:
+    """
+    Функция создаёт экземпляр DocumentsGatewayHTTPClient с уже настроенным HTTP-клиентом.
+
+    :return: Готовый к использованию DocumentsGatewayHTTPClient.
+    """
+    return OperationsGatewayHTTPClient(client=build_gateway_http_client())
 
 
 if __name__ == "__main__":
