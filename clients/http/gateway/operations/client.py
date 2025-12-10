@@ -9,7 +9,6 @@ from clients.http.gateway.client import build_gateway_http_client
 from clients.http.gateway.operations.schema import *
 from clients.http.gateway.users.schema import CreateUserRequestSchema
 from helpers.json_output import JSONOutput
-from helpers.users.FakeUser import FakeUserFactory
 
 
 # ====== КЛИЕНТ (ОСНОВНОЙ КЛАСС) == ДЛЯ ВЗАИМОДЕЙСТВИЯ С /api/v1/operations ====
@@ -57,7 +56,7 @@ class OperationsGatewayHTTPClient(HTTPClient):
         """
         request = GetOperationReceiptPathParamsSchema(operation_id=operation_id)
         response = self.get_operation_receipt_api(request)
-        return GetOperationReceiptResponseSchema.model_validate_json(response.text)
+        return GetOperationReceiptResponseSchema.model_validate_json(response.text, by_alias=True)
 
     def get_operations_api(self, query: GetOperationsQuerySchema) -> Response:
         """
@@ -115,12 +114,7 @@ class OperationsGatewayHTTPClient(HTTPClient):
         :param account_id: str – Идентификатор счёта. (например, "6bf8c921-7ce3-4a17-a201-96180a10842f")
         :return: JSON -> MakeFeeOperationResponseSchema
         """
-        request = MakeFeeOperationRequestSchema(
-            status=OperationStatus.COMPLETED,
-            amount=55.77,
-            card_id=card_id,
-            account_id=account_id
-        )
+        request = MakeFeeOperationRequestSchema(card_id=card_id, account_id=account_id)
         response = self.make_fee_operation_api(request)
         return MakeFeeOperationResponseSchema.model_validate_json(response.text)
 
@@ -140,8 +134,7 @@ class OperationsGatewayHTTPClient(HTTPClient):
         :param account_id: str – Идентификатор счёта. (например, "6bf8c921-7ce3-4a17-a201-96180a10842f")
         :return: JSON -> MakeTopUpOperationResponseSchema
         """
-        request = MakeTopUpOperationRequestSchema(card_id=card_id, account_id=account_id, amount=55.77,
-                                                  status=OperationStatus.COMPLETED)
+        request = MakeTopUpOperationRequestSchema(card_id=card_id, account_id=account_id)
         response = self.make_top_up_operation_api(request)
         return MakeTopUpOperationResponseSchema.model_validate_json(response.text)
 
@@ -162,8 +155,7 @@ class OperationsGatewayHTTPClient(HTTPClient):
         :param account_id: str – Идентификатор счёта. (например, "6bf8c921-7ce3-4a17-a201-96180a10842f")
         :return: JSON -> MakeCashbackOperationResponseSchema
         """
-        request = MakeCashbackOperationRequestSchema(card_id=card_id, account_id=account_id, amount=amount,
-                                                     status=status)
+        request = MakeCashbackOperationRequestSchema(card_id=card_id, account_id=account_id)
         response = self.make_cashback_operation_api(request)
         return MakeCashbackOperationResponseSchema.model_validate_json(response.text)
 
@@ -184,8 +176,7 @@ class OperationsGatewayHTTPClient(HTTPClient):
         :param account_id: str – Идентификатор счёта. (например, "6bf8c921-7ce3-4a17-a201-96180a10842f")
         :return: JSON -> MakeTransferOperationResponseSchema
         """
-        request = MakeTransferOperationRequestSchema(card_id=card_id, account_id=account_id, amount=amount,
-                                                     status=status)
+        request = MakeTransferOperationRequestSchema(card_id=card_id, account_id=account_id)
         response = self.make_transfer_operation_api(request)
         return MakeTransferOperationResponseSchema.model_validate_json(response.text)
 
@@ -208,8 +199,7 @@ class OperationsGatewayHTTPClient(HTTPClient):
         :param account_id: str – Идентификатор счёта. (например, "6bf8c921-7ce3-4a17-a201-96180a10842f")
         :return: JSON -> MakePurchaseOperationResponseSchema
         """
-        request = MakePurchaseOperationRequestSchema(card_id=card_id, account_id=account_id, amount=amount,
-                                                     status=status, category=category)
+        request = MakePurchaseOperationRequestSchema(card_id=card_id, account_id=account_id)
         response = self.make_purchase_operation_api(request)
         return MakePurchaseOperationResponseSchema.model_validate_json(response.text)
 
@@ -233,8 +223,7 @@ class OperationsGatewayHTTPClient(HTTPClient):
         :param status: OperationStatus – Статус операции. (например, OperationStatus.COMPLETED)
         :return: JSON -> MakeBillPaymentOperationResponseSchema
         """
-        request = MakeBillPaymentOperationRequestSchema(card_id=card_id, account_id=account_id, amount=amount,
-                                                        status=status)
+        request = MakeBillPaymentOperationRequestSchema(card_id=card_id, account_id=account_id)
         response = self.make_bill_payment_operation_api(request)
         return MakeBillPaymentOperationResponseSchema.model_validate_json(response.text)
 
@@ -257,8 +246,7 @@ class OperationsGatewayHTTPClient(HTTPClient):
         :param status: OperationStatus – Статус операции. (например, OperationStatus.COMPLETED)
         :return: JSON -> MakeCashWithdrawalOperationResponseSchema
         """
-        request = MakeCashWithdrawalOperationRequestSchema(card_id=card_id, account_id=account_id, amount=amount,
-                                                           status=status)
+        request = MakeCashWithdrawalOperationRequestSchema(card_id=card_id, account_id=account_id)
         response = self.make_cash_withdrawal_operation_api(request)
         return MakeCashWithdrawalOperationResponseSchema.model_validate_json(response.text)
 

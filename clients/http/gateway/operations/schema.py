@@ -5,6 +5,8 @@ from enum import StrEnum
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from tools.fakers import fake
+
 
 class OperationType(StrEnum):
     """
@@ -66,6 +68,7 @@ class GetOperationsSummaryResponseSchema(BaseModel):
     """
     PyDantic модель ответа на запрос статистики по операциям.
     """
+    model_config = ConfigDict(populate_by_name=True)
     summary: OperationsSummarySchema
 
 
@@ -73,6 +76,7 @@ class GetOperationsResponseSchema(BaseModel):
     """
     PyDantic модель ответа на запрос списка операций.
     """
+    model_config = ConfigDict(populate_by_name=True)
     operations: list[OperationSchema]
 
 
@@ -80,6 +84,7 @@ class GetOperationResponseSchema(BaseModel):
     """
     PyDantic модель ответа на запрос информации об операции.
     """
+    model_config = ConfigDict(populate_by_name=True)
     operation: OperationSchema
 
 
@@ -131,95 +136,120 @@ class BaseOperationRequestSchema(BaseModel):
     card_id: str = Field(alias="cardId")
 
 
-class MakeFeeOperationRequestSchema(BaseOperationRequestSchema):
+class MakeOperationRequestSchema(BaseModel):
+    """
+    PyDantic модель тела запроса для создания операции
+    с фейковыми данными
+    """
+    model_config = ConfigDict(populate_by_name=True)
+    status: OperationStatus = Field(default_factory=lambda: fake.enum(OperationStatus))
+    amount: float = Field(default_factory=lambda: fake.float())
+    account_id: str = Field(alias="accountId")  # Необходимо для корректного создания операции
+    card_id: str = Field(alias="cardId")  # Необходимо для корректного создания операции
+
+
+class MakeFeeOperationRequestSchema(MakeOperationRequestSchema):
     """
     PyDantic модель тела запроса для создания операции комиссии.
     """
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class MakeFeeOperationResponseSchema(BaseModel):
     """
     PyDantic модель ответа на создание операции комиссии.
     """
+    model_config = ConfigDict(populate_by_name=True)
     operation: OperationSchema
 
 
-class MakeTopUpOperationRequestSchema(BaseOperationRequestSchema):
+class MakeTopUpOperationRequestSchema(MakeOperationRequestSchema):
     """
     PyDantic модель тела запроса для создания операции пополнения.
     """
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class MakeTopUpOperationResponseSchema(BaseModel):
     """
     PyDantic модель ответа на создание операции пополнения.
     """
+    model_config = ConfigDict(populate_by_name=True)
     operation: OperationSchema
 
 
-class MakeCashbackOperationRequestSchema(BaseOperationRequestSchema):
+class MakeCashbackOperationRequestSchema(MakeOperationRequestSchema):
     """
     PyDantic модель тела запроса для создания операции кэшбэка.
     """
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class MakeCashbackOperationResponseSchema(BaseModel):
     """
     PyDantic модель ответа на создание операции кэшбэка.
     """
+    model_config = ConfigDict(populate_by_name=True)
     operation: OperationSchema
 
 
-class MakeTransferOperationRequestSchema(BaseOperationRequestSchema):
+class MakeTransferOperationRequestSchema(MakeOperationRequestSchema):
     """
     PyDantic модель тела запроса для создания операции перевода.
     """
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class MakeTransferOperationResponseSchema(BaseModel):
     """
     PyDantic модель ответа на создание операции перевода.
     """
+    model_config = ConfigDict(populate_by_name=True)
     operation: OperationSchema
 
 
-class MakePurchaseOperationRequestSchema(BaseOperationRequestSchema):
+class MakePurchaseOperationRequestSchema(MakeOperationRequestSchema):
     """
     PyDantic модель тела запроса для создания операции покупки.
     """
-    category: str
+    category: str = Field(default_factory=lambda: fake.category())
 
 
 class MakePurchaseOperationResponseSchema(BaseModel):
     """
     PyDantic модель ответа на создание операции покупки.
     """
+    model_config = ConfigDict(populate_by_name=True)
     operation: OperationSchema
 
 
-class MakeBillPaymentOperationRequestSchema(BaseOperationRequestSchema):
+class MakeBillPaymentOperationRequestSchema(MakeOperationRequestSchema):
     """
     PyDantic модель тела запроса для создания операции оплаты по счёту.
     """
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class MakeBillPaymentOperationResponseSchema(BaseModel):
     """
     PyDantic модель ответа на создание операции оплаты по счёту.
     """
+    model_config = ConfigDict(populate_by_name=True)
     operation: OperationSchema
 
 
-class MakeCashWithdrawalOperationRequestSchema(BaseOperationRequestSchema):
+class MakeCashWithdrawalOperationRequestSchema(MakeOperationRequestSchema):
     """
     PyDantic модель тела запроса для создания операции снятия наличных.
     """
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class MakeCashWithdrawalOperationResponseSchema(BaseModel):
     """
     PyDantic модель ответа на создание операции снятия наличных.
     """
+    model_config = ConfigDict(populate_by_name=True)
     operation: OperationSchema
 
 # ====== (END) BaseModel-СТРУКТУРЫ ЗАПРОСОВ И ПАРАМЕТРОВ (END) ======
