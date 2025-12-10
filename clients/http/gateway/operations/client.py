@@ -296,8 +296,8 @@ if __name__ == "__main__":
         operations_client = OperationsGatewayHTTPClient(raw_client)
 
         # 1. Создание пользователя
-        fake_user = FakeUserFactory().create()
-        create_user_request: CreateUserRequestSchema = CreateUserRequestSchema(**fake_user.to_payload())
+        # Генерация данных теперь происходит внутри схемы запроса
+        create_user_request: CreateUserRequestSchema = CreateUserRequestSchema()
         create_user_resp = users_client.create_user_api(create_user_request)
         create_user_resp.raise_for_status()
         user_data = create_user_resp.json()

@@ -46,14 +46,8 @@ class UsersGatewayHTTPClient(HTTPClient):
 
     # Теперь используем pydantic-модель для аннотации
     def create_user(self) -> CreateUserResponseSchema:
-        fake_user = FakeUserFactory().create()
-        request = CreateUserRequestSchema(  # Используем pydantic-модель для отправки запроса
-            email=f"user.{time.time()}@example.com",  # Передаем аргументы в формате snake_case вместо camelCase
-            last_name=fake_user.lastName,  # Передаем аргументы в формате snake_case вместо camelCase
-            first_name=fake_user.firstName,  # Передаем аргументы в формате snake_case вместо camelCase
-            middle_name=fake_user.middleName,  # Передаем аргументы в формате snake_case вместо camelCase
-            phone_number=fake_user.phoneNumber  # Передаем аргументы в формате snake_case вместо camelCase
-        )
+        # Генерация данных теперь происходит внутри схемы запроса
+        request = CreateUserRequestSchema()
         response = self.create_user_api(request)
         # Инициализируем модель через валидацию JSON строки
         return CreateUserResponseSchema.model_validate_json(response.text)
