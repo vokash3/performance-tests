@@ -8,7 +8,7 @@ from httpx import Response, QueryParams
 
 from clients.http.client import HTTPClient
 from clients.http.gateway.client import build_gateway_http_client
-from clients.http.gateway.users.client import CreateUserRequestDict
+from clients.http.gateway.users.schema import CreateUserRequestSchema
 from helpers.json_output import JSONOutput
 from helpers.users.FakeUser import FakeUserFactory
 
@@ -467,7 +467,7 @@ if __name__ == "__main__":
 
         # 1. Создание пользователя
         fake_user = FakeUserFactory().create()
-        create_user_request: CreateUserRequestDict = CreateUserRequestDict(**fake_user.to_payload())
+        create_user_request: CreateUserRequestSchema = CreateUserRequestSchema(**fake_user.to_payload())
         create_user_resp = users_client.create_user_api(create_user_request)
         create_user_resp.raise_for_status()
         user_data = create_user_resp.json()

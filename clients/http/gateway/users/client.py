@@ -1,51 +1,18 @@
-from typing import TypedDict
+import time
 
 from httpx import Response
 
 from clients.http.client import HTTPClient
 from clients.http.gateway.client import build_gateway_http_client
+from clients.http.gateway.users.schema import (  # Добавили импорт моделей
+    GetUserResponseSchema,
+    CreateUserRequestSchema,
+    CreateUserResponseSchema
+)
 from helpers.users.FakeUser import FakeUserFactory
 
 
-class CreateUserRequestDict(TypedDict):
-    """
-    Структура данных для создания нового пользователя.
-    """
-    email: str
-    lastName: str
-    firstName: str
-    middleName: str
-    phoneNumber: str
-
-
-# Добавили описание структуры пользователя
-class UserDict(TypedDict):
-    """
-    Описание структуры пользователя.
-    """
-    id: str
-    email: str
-    lastName: str
-    firstName: str
-    middleName: str
-    phoneNumber: str
-
-
-# Добавили описание структуры ответа получения пользователя
-class GetUserResponseDict(TypedDict):
-    """
-    Описание структуры ответа получения пользователя.
-    """
-    user: UserDict
-
-
-# Добавили описание структуры ответа создания пользователя
-class CreateUserResponseDict(TypedDict):
-    """
-    Описание структуры ответа создания пользователя.
-    """
-    user: UserDict
-
+# Старые модели с использованием TypedDict были удалены 10.12.2025
 
 class UsersGatewayHTTPClient(HTTPClient):
     """
@@ -61,63 +28,37 @@ class UsersGatewayHTTPClient(HTTPClient):
         """
         return self.get(f"/api/v1/users/{user_id}")
 
-    def create_user_api(self, request: CreateUserRequestDict) -> Response:
+    # Теперь используем pydantic-модель для аннотации
+    def create_user_api(self, request: CreateUserRequestSchema) -> Response:
         """
         Создание нового пользователя.
 
-        :param request: Словарь с данными нового пользователя.
+        :param request: Pydantic-модель с данными нового пользователя.
         :return: Ответ от сервера (объект httpx.Response).
         """
-        return self.post("/api/v1/users", json=request)
+        # Сериализуем модель в словарь с использованием alias
+        return self.post("/api/v1/users", json=request.model_dump(by_alias=True))
 
-    # def get_user(self, user_id: str):
-    #     """
-    #     Получить данные пользователя по его user_id.
-    #     :param user_id: str (ex: "a5e019b7-5e6e-4fc7-ab80-a22d05b68c60")
-    #     :return: httpx.Response
-    #     """
-    #     return self.client.get(f"/api/v1/users/{user_id}")
-
-    def update_user(self, user_id: str, data: dict) -> Response:
-        """
-        Обновить данные пользователя.
-        :param user_id: str (ex: "a5e019b7-5e6e-4fc7-ab80-a22d05b68c60")
-        :param data:
-        :return: httpx.Response
-        """
-        return self.client.patch(f"/api/v1/users/{user_id}", json=data)
-
-    def delete_user(self, user_id: str) -> Response:
-        """
-        Удалить пользователя.
-        :param user_id: str (ex: "a5e019b7-5e6e-4fc7-ab80-a22d05b68c60")
-        :return: httpx.Response
-        """
-        return self.client.delete(f"/api/v1/users/{user_id}")
-
-    # Добавили новый метод
-    def get_user(self, user_id: str) -> GetUserResponseDict:
-        """
-        Обёртка для получения данных пользователя.
-        :param user_id: Идентификатор пользователя. (ex: "06808055-dbf0-49d7-bab3-014aa01f8a73")
-        :return: Ответ от сервера JSON с данными пользователя.
-        """
+    def get_user(self, user_id: str) -> GetUserResponseSchema:
         response = self.get_user_api(user_id)
-        return response.json()
+        # Инициализируем модель через валидацию JSON строки
+        return GetUserResponseSchema.model_validate_json(response.text)
 
-    # Добавили новый метод
-    def create_user(self) -> CreateUserResponseDict:
-        """
-        Обёртка для создания нового пользователя.
-        :return: Ответ от сервера JSON с данными нового пользователя.
-        """
-        fake_user = FakeUserFactory().create().to_payload()
-        request = CreateUserRequestDict(**fake_user)
+    # Теперь используем pydantic-модель для аннотации
+    def create_user(self) -> CreateUserResponseSchema:
+        fake_user = FakeUserFactory().create()
+        request = CreateUserRequestSchema(  # Используем pydantic-модель для отправки запроса
+            email=f"user.{time.time()}@example.com",  # Передаем аргументы в формате snake_case вместо camelCase
+            last_name=fake_user.lastName,  # Передаем аргументы в формате snake_case вместо camelCase
+            first_name=fake_user.firstName,  # Передаем аргументы в формате snake_case вместо camelCase
+            middle_name=fake_user.middleName,  # Передаем аргументы в формате snake_case вместо camelCase
+            phone_number=fake_user.phoneNumber  # Передаем аргументы в формате snake_case вместо camelCase
+        )
         response = self.create_user_api(request)
-        return response.json()
+        # Инициализируем модель через валидацию JSON строки
+        return CreateUserResponseSchema.model_validate_json(response.text)
 
 
-# Добавляем builder для UsersGatewayHTTPClient
 def build_users_gateway_http_client() -> UsersGatewayHTTPClient:
     """
     Функция создаёт экземпляр UsersGatewayHTTPClient с уже настроенным HTTP-клиентом.
