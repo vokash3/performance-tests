@@ -22,5 +22,5 @@ print('Open credit card account response:', JSONOutput.get_json(open_debit_card_
 
 # Получаем документ тарифа
 tarif_document_response = documents_gateway_client.get_tariff_document(
-    open_debit_card_account_response['account']['id'])
+    open_debit_card_account_response.account.id)
 print('Get tariff document response:', JSONOutput.get_json(tarif_document_response))
