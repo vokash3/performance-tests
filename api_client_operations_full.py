@@ -1,5 +1,7 @@
 from typing import TypedDict
 
+from clients.http.gateway.operations.schema import GetOperationsResponseSchema, GetOperationResponseSchema, \
+    GetOperationReceiptResponseSchema
 from clients.http.gateway.users.client import build_users_gateway_http_client
 from clients.http.gateway.accounts.client import build_accounts_gateway_http_client
 from clients.http.gateway.operations.client import build_operations_gateway_http_client
@@ -19,28 +21,28 @@ def main():
     # 1. Пользователь
     user = users_client.create_user()
     print_step("Create user", user)
-    user_id = user["user"]["id"]
+    user_id = user.user.id
 
     # 2. Дебетовый счёт/карта
     account = accounts_client.open_debit_card_account(user_id=user_id)
     print_step("Open debit card account", account)
 
-    account_id = account["account"]["id"]
-    cards = account["account"]["cards"]
+    account_id = account.account.id
+    cards = account.account.cards
     assert cards, "No cards returned for account"
-    card_id = cards[0]["id"]
+    card_id = cards[0].id
 
     #  Локальный хелпер для одной операции
     def run_operation(kind: str, op_response):
         print_step(f"{kind} operation", op_response)
-        op_id = op_response["operation"]["id"]
+        op_id = op_response.operation.id
 
         # get_operation
-        op = operations_client.get_operation(op_id)
+        op: GetOperationResponseSchema = operations_client.get_operation(op_id)
         print_step(f"Get {kind} operation", op)
 
         # get_operation_receipt
-        receipt = operations_client.get_operation_receipt(op_id)
+        receipt: GetOperationReceiptResponseSchema = operations_client.get_operation_receipt(op_id)
         print_step(f"{kind} operation receipt", receipt)
 
         return op_id
