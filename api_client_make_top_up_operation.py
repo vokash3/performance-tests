@@ -19,7 +19,7 @@ print('Open debit card account response:', JSONOutput.get_json(open_debit_card_a
 
 # Операция пополнения счёта
 make_top_up_operation_response = operations_gateway_client.make_top_up_operation(
-    card_id=open_debit_card_account_response['account']['cards'][0]['id'],
-    account_id=open_debit_card_account_response['account']['id']
+    card_id=open_debit_card_account_response.account.cards[0].id,
+    account_id=open_debit_card_account_response.account.id
 )
 print('Make top up operation response:', JSONOutput.get_json(make_top_up_operation_response))
