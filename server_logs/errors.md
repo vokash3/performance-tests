@@ -101,3 +101,15 @@
 - Рассмотреть использование **кэширования** или **очереди запросов** на получение чеков.
 
 ---
+
+## ! ! !
+
+❌ Статус 500 и краш скрипта при
+`    status: OperationStatus = Field(default_factory=lambda: fake.enum(OperationStatus))
+`
+в Pydantic модели **MakeOperationRequestSchema**
+---
+✅ При постоянном значении по умолчанию скрипт работает штатно
+`    status: OperationStatus = Field(default=OperationStatus.COMPLETED)
+`
+---
