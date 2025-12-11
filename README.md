@@ -39,6 +39,7 @@ __Отдельный тестовый стенд развёрнут на вир�
 - [Task 9.3 – Практика: Написание gRPC API клиента (gRPC – Cards)](#93--практика-написание-grpc-api-клиента-grpc--cards)
 - [Task 9.4 – Практика реализации gRPC API клиентов: OperationsGatewayService](#94--практика-реализации-grpc-api-клиентов-operationsgatewayservice)
 - [Task 9.5 #1 – Практика использования API-клиентов: получение документов по счету](#95-1--практика-использования-api-клиентов-получение-документов-по-счету)
+- [Task 9.5 #2 – Практика использования API-клиентов: создание операции пополнения счета](#95-2--практика-использования-api-клиентов-создание-операции-пополнения-счета)
 
 ---
 
@@ -1000,6 +1001,70 @@ __Отдельный тестовый стенд развёрнут на вир�
             Get contract document response: contract {
               url: "http://localhost:3000/documents/contract_8ad98b3d-a590-4122-9233-6843004a5675.pdf"
               document: "Bag world nor soldier accept."
+            }
+          ```
+
+---
+
+## 9.5 #2 – Практика использования API-клиентов: создание операции пополнения счета
+
+<img src="https://media.proglib.io/posts/2021/02/12/f709819f6c3ad08c3771fbc3efecc929.webp" alt="grpc_pic" height="100" width="200">
+
+- Запускаем
+    - **_grpc_api_client_make_top_up_operation.py_**
+      ```bash
+      python grpc_api_client_make_top_up_operation.py
+      ```
+        - ### Пример успешного выполнения:
+          ```
+            Create user response: user {
+              id: "48bcf67b-041b-41c5-a8a2-80314eebc9fc"
+              email: "1765464948.297502.radislav_1996@example.net"
+              last_name: "Дроздов"
+              first_name: "Ефим"
+              middle_name: "Роман"
+              phone_number: "+7 645 502 94 79"
+            }
+            
+            Open credit account response: account {
+              id: "749013f9-0fed-49c9-92e1-889d06afe986"
+              type: ACCOUNT_TYPE_DEBIT_CARD
+              cards {
+                id: "6b029ee8-55f9-4a14-81a1-3d605e0a1123"
+                pin: "0571"
+                cvv: "941"
+                type: CARD_TYPE_VIRTUAL
+                status: CARD_STATUS_ACTIVE
+                account_id: "749013f9-0fed-49c9-92e1-889d06afe986"
+                card_number: "30279149196523"
+                card_holder: "Ефим Дроздов"
+                expiry_date: "09-12-2032"
+                payment_system: CARD_PAYMENT_SYSTEM_MASTERCARD
+              }
+              cards {
+                id: "9fd926f9-d607-4e48-a902-98ea9096071c"
+                pin: "4516"
+                cvv: "080"
+                type: CARD_TYPE_PHYSICAL
+                status: CARD_STATUS_ACTIVE
+                account_id: "749013f9-0fed-49c9-92e1-889d06afe986"
+                card_number: "5424005450149006"
+                card_holder: "Ефим Дроздов"
+                expiry_date: "09-12-2032"
+                payment_system: CARD_PAYMENT_SYSTEM_MASTERCARD
+              }
+              status: ACCOUNT_STATUS_ACTIVE
+            }
+            
+            Operation make top up response: operation {
+              id: "431445f7-0588-4172-8caf-19d7ce55976f"
+              type: OPERATION_TYPE_TOP_UP
+              status: OPERATION_STATUS_IN_PROGRESS
+              amount: 230.89999389648438
+              card_id: "6b029ee8-55f9-4a14-81a1-3d605e0a1123"
+              category: "money_in"
+              created_at: "11-12-2025 14:55:48"
+              account_id: "749013f9-0fed-49c9-92e1-889d06afe986"
             }
           ```
 
