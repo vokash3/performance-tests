@@ -36,6 +36,7 @@ __Отдельный тестовый стенд развёрнут на вир�
 - [Task 8.3 – Pydantic в API клиентах: счета](#83--практика-работы-с-генерацией-случайных-данных-faker)
 - [Task 9.1 – Практика работы с grpcio](#91--практика-работы-с-grpcio)
 - [Task 9.2 – Практикуемся в работе с grpcio: получение чека по операции](#92--практикуемся-в-работе-с-grpcio-получение-чека-по-операции)
+- [Task 9.3 – Практика: Написание gRPC API клиента (gRPC – Cards)](#93--практика-написание-grpc-api-клиента-grpc--cards)
 
 ---
 
@@ -570,7 +571,9 @@ __Отдельный тестовый стенд развёрнут на вир�
             status: ACCOUNT_STATUS_ACTIVE
           }
           ```
+
 ---
+
 ## 9.2 – Практикуемся в работе с grpcio: получение чека по операции
 
 <img src="https://media.proglib.io/posts/2021/02/12/f709819f6c3ad08c3771fbc3efecc929.webp" alt="grpc_pic" height="100" width="200">
@@ -637,4 +640,46 @@ __Отдельный тестовый стенд развёрнут на вир�
               document: "8079589a-9654-4b61-89e4-3f5cb34bc00b"
             }
           ```
+
+---
+
+## 9.3 – Практика: Написание gRPC API клиента (gRPC – Cards)
+
+<img src="https://media.proglib.io/posts/2021/02/12/f709819f6c3ad08c3771fbc3efecc929.webp" alt="grpc_pic" height="100" width="200">
+
+- Запускаем
+    - **_clients/grpc/gateway/cards/client.py_**
+      ```bash
+      PYTHONPATH=`pwd` python clients/grpc/gateway/cards/client.py
+      ```
+        - ### Пример успешного выполнения:
+          ```
+            Using user_id=553e146c-ee7d-43e0-8e54-19fab082b174, account_id=ff89b4e8-d41e-4ccc-b488-6050879d0d92
+            Issue virtual card response: card {
+              id: "8cd8788c-c02d-4285-8eda-152b92e8b8e2"
+              pin: "1645"
+              cvv: "168"
+              type: CARD_TYPE_VIRTUAL
+              status: CARD_STATUS_ACTIVE
+              account_id: "ff89b4e8-d41e-4ccc-b488-6050879d0d92"
+              card_number: "4224465181104024"
+              card_holder: "Кузьма Потапов"
+              expiry_date: "09-12-2032"
+              payment_system: CARD_PAYMENT_SYSTEM_MASTERCARD
+            }
+            
+            Issue physical card response: card {
+              id: "c59bd2c4-74b2-41ec-9b66-d4ef797506c1"
+              pin: "4185"
+              cvv: "851"
+              type: CARD_TYPE_PHYSICAL
+              status: CARD_STATUS_ACTIVE
+              account_id: "ff89b4e8-d41e-4ccc-b488-6050879d0d92"
+              card_number: "3501797545457433"
+              card_holder: "Кузьма Потапов"
+              expiry_date: "09-12-2032"
+              payment_system: CARD_PAYMENT_SYSTEM_MASTERCARD
+            }
+          ```
+
 ---
