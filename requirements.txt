@@ -3,3 +3,4 @@ faker
 pydantic[email]
 grpcio
 grpcio-tools
+gevent
