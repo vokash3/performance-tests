@@ -35,6 +35,7 @@ __Отдельный тестовый стенд развёрнут на вир�
 - [Task 8.2 #2 – Pydantic в API клиентах: операции](#82-2--pydantic-в-api-клиентах-операции)
 - [Task 8.3 – Pydantic в API клиентах: счета](#83--практика-работы-с-генерацией-случайных-данных-faker)
 - [Task 9.1 – Практика работы с grpcio](#91--практика-работы-с-grpcio)
+- [Task 9.2 – Практикуемся в работе с grpcio: получение чека по операции](#92--практикуемся-в-работе-с-grpcio-получение-чека-по-операции)
 
 ---
 
@@ -569,5 +570,71 @@ __Отдельный тестовый стенд развёрнут на вир�
             status: ACCOUNT_STATUS_ACTIVE
           }
           ```
+---
+## 9.2 – Практикуемся в работе с grpcio: получение чека по операции
 
+<img src="https://media.proglib.io/posts/2021/02/12/f709819f6c3ad08c3771fbc3efecc929.webp" alt="grpc_pic" height="100" width="200">
+
+- Запускаем
+    - **_grpcio_get_operation_receipt.py_**
+      ```bash
+      python grpcio_get_operation_receipt.py
+      ```
+        - ### Пример успешного выполнения:
+          ```
+            Create user response: user {
+              id: "32089d49-0b77-458e-b490-7e9e12a38dc6"
+              email: "1765456826.456606.aleksandra41@example.com"
+              last_name: "Елисеев"
+              first_name: "Валерьян"
+              middle_name: "Конон"
+              phone_number: "8 381 582 5414"
+            }
+            
+            Open debit card account response: account {
+              id: "54561c25-54b3-4ab1-b9d0-54e738b42bcc"
+              type: ACCOUNT_TYPE_DEBIT_CARD
+              cards {
+                id: "aa0741c6-e589-4106-9c75-61e363943c73"
+                pin: "5347"
+                cvv: "680"
+                type: CARD_TYPE_VIRTUAL
+                status: CARD_STATUS_ACTIVE
+                account_id: "54561c25-54b3-4ab1-b9d0-54e738b42bcc"
+                card_number: "676107779644"
+                card_holder: "Валерьян Елисеев"
+                expiry_date: "09-12-2032"
+                payment_system: CARD_PAYMENT_SYSTEM_MASTERCARD
+              }
+              cards {
+                id: "1d5f133a-2ec7-4051-87b6-c29af9666bb4"
+                pin: "6360"
+                cvv: "6654"
+                type: CARD_TYPE_PHYSICAL
+                status: CARD_STATUS_ACTIVE
+                account_id: "54561c25-54b3-4ab1-b9d0-54e738b42bcc"
+                card_number: "213116182994407"
+                card_holder: "Валерьян Елисеев"
+                expiry_date: "09-12-2032"
+                payment_system: CARD_PAYMENT_SYSTEM_MASTERCARD
+              }
+              status: ACCOUNT_STATUS_ACTIVE
+            }
+            
+            Make top up operation response: operation {
+              id: "8079589a-9654-4b61-89e4-3f5cb34bc00b"
+              type: OPERATION_TYPE_TOP_UP
+              status: OPERATION_STATUS_COMPLETED
+              amount: 563.969970703125
+              card_id: "aa0741c6-e589-4106-9c75-61e363943c73"
+              category: "money_in"
+              created_at: "11-12-2025 12:40:27"
+              account_id: "54561c25-54b3-4ab1-b9d0-54e738b42bcc"
+            }
+            
+            Get operation receipt response: receipt {
+              url: "http://localhost:3000/documents/receipt_8079589a-9654-4b61-89e4-3f5cb34bc00b.pdf"
+              document: "8079589a-9654-4b61-89e4-3f5cb34bc00b"
+            }
+          ```
 ---
