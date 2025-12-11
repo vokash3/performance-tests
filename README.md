@@ -38,6 +38,7 @@ __Отдельный тестовый стенд развёрнут на вир�
 - [Task 9.2 – Практикуемся в работе с grpcio: получение чека по операции](#92--практикуемся-в-работе-с-grpcio-получение-чека-по-операции)
 - [Task 9.3 – Практика: Написание gRPC API клиента (gRPC – Cards)](#93--практика-написание-grpc-api-клиента-grpc--cards)
 - [Task 9.4 – Практика реализации gRPC API клиентов: OperationsGatewayService](#94--практика-реализации-grpc-api-клиентов-operationsgatewayservice)
+- [Task 9.5 #1 – Практика использования API-клиентов: получение документов по счету](#95-1--практика-использования-api-клиентов-получение-документов-по-счету)
 
 ---
 
@@ -937,5 +938,69 @@ __Отдельный тестовый стенд развёрнут на вир�
               OPERATION_STATUS_COMPLETED: _OperationStatus.ValueType # 2
               OPERATION_STATUS_FAILED: _OperationStatus.ValueType # 3
               ```
+
+---
+
+## 9.5 #1 – Практика использования API-клиентов: получение документов по счету
+
+<img src="https://media.proglib.io/posts/2021/02/12/f709819f6c3ad08c3771fbc3efecc929.webp" alt="grpc_pic" height="100" width="200">
+
+- Запускаем
+    - **_grpc_api_client_get_documents.py_**
+      ```bash
+      python grpc_api_client_get_documents.py
+      ```
+        - ### Пример успешного выполнения:
+          ```
+            Create user response: user {
+              id: "a5f260fb-cc18-4688-a7fa-d6495c95b842"
+              email: "1765463846.336705.belovandre@example.net"
+              last_name: "Кудрявцев"
+              first_name: "Исидор"
+              middle_name: "Геннадий"
+              phone_number: "+7 (078) 978-6409"
+            }
+            
+            Open credit account response: account {
+              id: "8ad98b3d-a590-4122-9233-6843004a5675"
+              type: ACCOUNT_TYPE_CREDIT_CARD
+              cards {
+                id: "1bac350a-d7eb-4b8d-b488-19a5b77701ee"
+                pin: "4861"
+                cvv: "630"
+                type: CARD_TYPE_VIRTUAL
+                status: CARD_STATUS_ACTIVE
+                account_id: "8ad98b3d-a590-4122-9233-6843004a5675"
+                card_number: "4974899808594971"
+                card_holder: "Исидор Кудрявцев"
+                expiry_date: "09-12-2032"
+                payment_system: CARD_PAYMENT_SYSTEM_MASTERCARD
+              }
+              cards {
+                id: "08252684-77ed-47e3-a975-23d014496979"
+                pin: "6935"
+                cvv: "7044"
+                type: CARD_TYPE_PHYSICAL
+                status: CARD_STATUS_ACTIVE
+                account_id: "8ad98b3d-a590-4122-9233-6843004a5675"
+                card_number: "2265712697112742"
+                card_holder: "Исидор Кудрявцев"
+                expiry_date: "09-12-2032"
+                payment_system: CARD_PAYMENT_SYSTEM_MASTERCARD
+              }
+              status: ACCOUNT_STATUS_ACTIVE
+              balance: 25000
+            }
+            
+            Tariff document response: tariff {
+              url: "http://localhost:3000/documents/tariff_8ad98b3d-a590-4122-9233-6843004a5675.pdf"
+              document: "Simply plan everything report."
+            }
+            
+            Get contract document response: contract {
+              url: "http://localhost:3000/documents/contract_8ad98b3d-a590-4122-9233-6843004a5675.pdf"
+              document: "Bag world nor soldier accept."
+            }
+          ```
 
 ---
