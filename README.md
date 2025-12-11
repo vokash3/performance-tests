@@ -37,6 +37,7 @@ __Отдельный тестовый стенд развёрнут на вир�
 - [Task 9.1 – Практика работы с grpcio](#91--практика-работы-с-grpcio)
 - [Task 9.2 – Практикуемся в работе с grpcio: получение чека по операции](#92--практикуемся-в-работе-с-grpcio-получение-чека-по-операции)
 - [Task 9.3 – Практика: Написание gRPC API клиента (gRPC – Cards)](#93--практика-написание-grpc-api-клиента-grpc--cards)
+- [Task 9.4 – Практика реализации gRPC API клиентов: OperationsGatewayService](#94--практика-реализации-grpc-api-клиентов-operationsgatewayservice)
 
 ---
 
@@ -681,5 +682,260 @@ __Отдельный тестовый стенд развёрнут на вир�
               payment_system: CARD_PAYMENT_SYSTEM_MASTERCARD
             }
           ```
+
+---
+
+## 9.4 – Практика реализации gRPC API клиентов: OperationsGatewayService
+
+<img src="https://media.proglib.io/posts/2021/02/12/f709819f6c3ad08c3771fbc3efecc929.webp" alt="grpc_pic" height="100" width="200">
+
+- Запускаем для проверки работы методов
+    - **_clients/grpc/gateway/operations/client.py_**
+      ```bash
+      PYTHONPATH=`pwd` python clients/grpc/gateway/operations/client.py
+      ```
+        - ### Пример успешной проверки:
+          ```
+            STATUS для операций:  1
+            ==============================================
+            Create user response: user {
+              id: "248bbdee-6852-4bb8-a900-3a1bd24aaf4d"
+              email: "1765461963.1300359.efremovbudimir@example.com"
+              last_name: "Калинин"
+              first_name: "Доброслав"
+              middle_name: "Захар"
+              phone_number: "+7 174 854 68 67"
+            }
+            
+            Open debit account response: account {
+              id: "d3d3534f-5d1f-42d5-a7b8-e0f587a6c170"
+              type: ACCOUNT_TYPE_DEBIT_CARD
+              cards {
+                id: "0348e08c-4433-40ac-b602-79838c697d9e"
+                pin: "8158"
+                cvv: "173"
+                type: CARD_TYPE_VIRTUAL
+                status: CARD_STATUS_ACTIVE
+                account_id: "d3d3534f-5d1f-42d5-a7b8-e0f587a6c170"
+                card_number: "4677627879683906"
+                card_holder: "Доброслав Калинин"
+                expiry_date: "09-12-2032"
+                payment_system: CARD_PAYMENT_SYSTEM_MASTERCARD
+              }
+              cards {
+                id: "826b21f4-25a4-4f19-ad53-cbe09d018e68"
+                pin: "9920"
+                cvv: "206"
+                type: CARD_TYPE_PHYSICAL
+                status: CARD_STATUS_ACTIVE
+                account_id: "d3d3534f-5d1f-42d5-a7b8-e0f587a6c170"
+                card_number: "30051028463757"
+                card_holder: "Доброслав Калинин"
+                expiry_date: "09-12-2032"
+                payment_system: CARD_PAYMENT_SYSTEM_MASTERCARD
+              }
+              status: ACCOUNT_STATUS_ACTIVE
+            }
+            
+            Using existing card from account: id: "0348e08c-4433-40ac-b602-79838c697d9e"
+            pin: "8158"
+            cvv: "173"
+            type: CARD_TYPE_VIRTUAL
+            status: CARD_STATUS_ACTIVE
+            account_id: "d3d3534f-5d1f-42d5-a7b8-e0f587a6c170"
+            card_number: "4677627879683906"
+            card_holder: "Доброслав Калинин"
+            expiry_date: "09-12-2032"
+            payment_system: CARD_PAYMENT_SYSTEM_MASTERCARD
+            
+            Make fee operation response: operation {
+              id: "78fa0a55-e9be-43bf-8d56-f8dfde93e095"
+              type: OPERATION_TYPE_FEE
+              status: OPERATION_STATUS_IN_PROGRESS
+              amount: -385.97000122070312
+              card_id: "0348e08c-4433-40ac-b602-79838c697d9e"
+              category: "fee"
+              created_at: "11-12-2025 14:06:03"
+              account_id: "d3d3534f-5d1f-42d5-a7b8-e0f587a6c170"
+            }
+            
+            Make top up operation response: operation {
+              id: "e269a2b2-70e3-4166-8c2f-59ae67fcd47a"
+              type: OPERATION_TYPE_TOP_UP
+              status: OPERATION_STATUS_IN_PROGRESS
+              amount: 871.77001953125
+              card_id: "0348e08c-4433-40ac-b602-79838c697d9e"
+              category: "money_in"
+              created_at: "11-12-2025 14:06:03"
+              account_id: "d3d3534f-5d1f-42d5-a7b8-e0f587a6c170"
+            }
+            
+            Make cashback operation response: operation {
+              id: "9eab5236-24f1-4e4b-8960-e7221b39bfdb"
+              type: OPERATION_TYPE_CASHBACK
+              status: OPERATION_STATUS_IN_PROGRESS
+              amount: 966.20001220703125
+              card_id: "0348e08c-4433-40ac-b602-79838c697d9e"
+              category: "cashback_rewards"
+              created_at: "11-12-2025 14:06:04"
+              account_id: "d3d3534f-5d1f-42d5-a7b8-e0f587a6c170"
+            }
+            
+            Make transfer operation response: operation {
+              id: "c7d89ac6-f13f-4d3c-b02e-fc049c7384f1"
+              type: OPERATION_TYPE_TRANSFER
+              status: OPERATION_STATUS_IN_PROGRESS
+              amount: -944.57000732421875
+              card_id: "0348e08c-4433-40ac-b602-79838c697d9e"
+              category: "transfer"
+              created_at: "11-12-2025 14:06:04"
+              account_id: "d3d3534f-5d1f-42d5-a7b8-e0f587a6c170"
+            }
+            
+            Make purchase operation response: operation {
+              id: "bec7fa6f-06a1-4588-8ee1-e8df3662c1b4"
+              type: OPERATION_TYPE_PURCHASE
+              status: OPERATION_STATUS_IN_PROGRESS
+              amount: -585.29998779296875
+              card_id: "0348e08c-4433-40ac-b602-79838c697d9e"
+              category: "mobile"
+              created_at: "11-12-2025 14:06:04"
+              account_id: "d3d3534f-5d1f-42d5-a7b8-e0f587a6c170"
+            }
+            
+            Make bill payment operation response: operation {
+              id: "8364ce6e-36c6-4dbc-89ef-ab6695b3a6fd"
+              type: OPERATION_TYPE_BILL_PAYMENT
+              status: OPERATION_STATUS_IN_PROGRESS
+              amount: -942.4000244140625
+              card_id: "0348e08c-4433-40ac-b602-79838c697d9e"
+              category: "bill_payment"
+              created_at: "11-12-2025 14:06:04"
+              account_id: "d3d3534f-5d1f-42d5-a7b8-e0f587a6c170"
+            }
+            
+            Make cash withdrawal operation response: operation {
+              id: "73ce8d86-0ade-42e5-9fb8-c07cf576bc84"
+              type: OPERATION_TYPE_CASH_WITHDRAWAL
+              status: OPERATION_STATUS_IN_PROGRESS
+              amount: -778.969970703125
+              card_id: "0348e08c-4433-40ac-b602-79838c697d9e"
+              category: "cash_withdrawal"
+              created_at: "11-12-2025 14:06:04"
+              account_id: "d3d3534f-5d1f-42d5-a7b8-e0f587a6c170"
+            }
+            
+            Get operations response: operations {
+              id: "78fa0a55-e9be-43bf-8d56-f8dfde93e095"
+              type: OPERATION_TYPE_FEE
+              status: OPERATION_STATUS_IN_PROGRESS
+              amount: -385.97000122070312
+              card_id: "0348e08c-4433-40ac-b602-79838c697d9e"
+              category: "fee"
+              created_at: "11-12-2025 14:06:03"
+              account_id: "d3d3534f-5d1f-42d5-a7b8-e0f587a6c170"
+            }
+            operations {
+              id: "e269a2b2-70e3-4166-8c2f-59ae67fcd47a"
+              type: OPERATION_TYPE_TOP_UP
+              status: OPERATION_STATUS_IN_PROGRESS
+              amount: 871.77001953125
+              card_id: "0348e08c-4433-40ac-b602-79838c697d9e"
+              category: "money_in"
+              created_at: "11-12-2025 14:06:03"
+              account_id: "d3d3534f-5d1f-42d5-a7b8-e0f587a6c170"
+            }
+            operations {
+              id: "9eab5236-24f1-4e4b-8960-e7221b39bfdb"
+              type: OPERATION_TYPE_CASHBACK
+              status: OPERATION_STATUS_IN_PROGRESS
+              amount: 966.20001220703125
+              card_id: "0348e08c-4433-40ac-b602-79838c697d9e"
+              category: "cashback_rewards"
+              created_at: "11-12-2025 14:06:04"
+              account_id: "d3d3534f-5d1f-42d5-a7b8-e0f587a6c170"
+            }
+            operations {
+              id: "c7d89ac6-f13f-4d3c-b02e-fc049c7384f1"
+              type: OPERATION_TYPE_TRANSFER
+              status: OPERATION_STATUS_IN_PROGRESS
+              amount: -944.57000732421875
+              card_id: "0348e08c-4433-40ac-b602-79838c697d9e"
+              category: "transfer"
+              created_at: "11-12-2025 14:06:04"
+              account_id: "d3d3534f-5d1f-42d5-a7b8-e0f587a6c170"
+            }
+            operations {
+              id: "bec7fa6f-06a1-4588-8ee1-e8df3662c1b4"
+              type: OPERATION_TYPE_PURCHASE
+              status: OPERATION_STATUS_IN_PROGRESS
+              amount: -585.29998779296875
+              card_id: "0348e08c-4433-40ac-b602-79838c697d9e"
+              category: "mobile"
+              created_at: "11-12-2025 14:06:04"
+              account_id: "d3d3534f-5d1f-42d5-a7b8-e0f587a6c170"
+            }
+            operations {
+              id: "8364ce6e-36c6-4dbc-89ef-ab6695b3a6fd"
+              type: OPERATION_TYPE_BILL_PAYMENT
+              status: OPERATION_STATUS_IN_PROGRESS
+              amount: -942.4000244140625
+              card_id: "0348e08c-4433-40ac-b602-79838c697d9e"
+              category: "bill_payment"
+              created_at: "11-12-2025 14:06:04"
+              account_id: "d3d3534f-5d1f-42d5-a7b8-e0f587a6c170"
+            }
+            operations {
+              id: "73ce8d86-0ade-42e5-9fb8-c07cf576bc84"
+              type: OPERATION_TYPE_CASH_WITHDRAWAL
+              status: OPERATION_STATUS_IN_PROGRESS
+              amount: -778.969970703125
+              card_id: "0348e08c-4433-40ac-b602-79838c697d9e"
+              category: "cash_withdrawal"
+              created_at: "11-12-2025 14:06:04"
+              account_id: "d3d3534f-5d1f-42d5-a7b8-e0f587a6c170"
+            }
+            
+            Get operations summary response: summary {
+              spent_amount: -3637.21
+              received_amount: 871.77
+              cashback_amount: 966.2
+            }
+            
+            Get operation response: operation {
+              id: "73ce8d86-0ade-42e5-9fb8-c07cf576bc84"
+              type: OPERATION_TYPE_CASH_WITHDRAWAL
+              status: OPERATION_STATUS_IN_PROGRESS
+              amount: -778.969970703125
+              card_id: "0348e08c-4433-40ac-b602-79838c697d9e"
+              category: "cash_withdrawal"
+              created_at: "11-12-2025 14:06:04"
+              account_id: "d3d3534f-5d1f-42d5-a7b8-e0f587a6c170"
+            }
+            
+            Get operation receipt response: receipt {
+              url: "http://localhost:3000/documents/receipt_73ce8d86-0ade-42e5-9fb8-c07cf576bc84.pdf"
+              document: "73ce8d86-0ade-42e5-9fb8-c07cf576bc84"
+            }
+          ```
+            - ‼️ Можем столкнуться с проблемой, если СТАТУС ОТЛИЧЕН ОТ status: **OPERATION_STATUS_IN_PROGRESS** (1) или
+              **OPERATION_STATUS_COMPLETED** (2):
+              ```
+              grpc._channel._InactiveRpcError: <_InactiveRpcError of RPC that terminated with:
+              status = StatusCode.INTERNAL
+              details = "Get receipt: An error occurred (NoSuchKey) when calling the GetObject operation:
+              The specified key does not exist."
+              debug_error_string = "UNKNOWN:Error received from peer  {grpc_status:13, grpc_message:"Get receipt:
+              An error occurred (NoSuchKey) when calling the GetObject operation: The specified key does not exist."}"
+              ```
+
+              _Для справки:_
+              ```
+              DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+              OPERATION_STATUS_UNSPECIFIED: _OperationStatus.ValueType # 0
+              OPERATION_STATUS_IN_PROGRESS: _OperationStatus.ValueType # 1
+              OPERATION_STATUS_COMPLETED: _OperationStatus.ValueType # 2
+              OPERATION_STATUS_FAILED: _OperationStatus.ValueType # 3
+              ```
 
 ---
