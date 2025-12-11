@@ -34,6 +34,7 @@ __Отдельный тестовый стенд развёрнут на вир�
 - [Task 8.2 #1 – Pydantic в API клиентах: документы](#82-1--pydantic-в-api-клиентах-документы)
 - [Task 8.2 #2 – Pydantic в API клиентах: операции](#82-2--pydantic-в-api-клиентах-операции)
 - [Task 8.3 – Pydantic в API клиентах: счета](#83--практика-работы-с-генерацией-случайных-данных-faker)
+- [Task 9.1 – Практика работы с grpcio](#91--практика-работы-с-grpcio)
 
 ---
 
@@ -515,5 +516,58 @@ __Отдельный тестовый стенд развёрнут на вир�
       python api_client_make_top_up_operation.py
       ```
       **Должны выполняться без ошибок!**
+
+---
+
+## 9.1 – Практика работы с grpcio
+
+<img src="https://media.proglib.io/posts/2021/02/12/f709819f6c3ad08c3771fbc3efecc929.webp" alt="grpc_pic" height="100" width="200">
+
+- Запускаем
+    - **_grpcio_open_debit_card_account.py_**
+      ```bash
+      python grpcio_open_debit_card_account.py
+      ```
+        - ### Пример успешного выполнения:
+          ```
+          Create user response: user {
+            id: "553e146c-ee7d-43e0-8e54-19fab082b174"
+            email: "1765455072.771892.evse1984@example.net"
+            last_name: "Потапов"
+            first_name: "Кузьма"
+            middle_name: "Спартак"
+            phone_number: "8 253 079 17 14"
+          }
+          
+          Get debit card account response: account {
+            id: "ff89b4e8-d41e-4ccc-b488-6050879d0d92"
+            type: ACCOUNT_TYPE_DEBIT_CARD
+            cards {
+              id: "6c93e7f5-8833-4982-96af-1a5e2eea49d6"
+              pin: "2885"
+              cvv: "635"
+              type: CARD_TYPE_VIRTUAL
+              status: CARD_STATUS_ACTIVE
+              account_id: "ff89b4e8-d41e-4ccc-b488-6050879d0d92"
+              card_number: "3549469535051634"
+              card_holder: "Кузьма Потапов"
+              expiry_date: "09-12-2032"
+              payment_system: CARD_PAYMENT_SYSTEM_MASTERCARD
+            }
+            cards {
+              id: "6529f2d7-cf5d-4955-bd57-04f2de78779f"
+              pin: "8402"
+              cvv: "918"
+              type: CARD_TYPE_PHYSICAL
+              status: CARD_STATUS_ACTIVE
+              account_id: "ff89b4e8-d41e-4ccc-b488-6050879d0d92"
+              card_number: "4614568630436471"
+              card_holder: "Кузьма Потапов"
+              expiry_date: "09-12-2032"
+              payment_system: CARD_PAYMENT_SYSTEM_MASTERCARD
+            }
+            status: ACCOUNT_STATUS_ACTIVE
+          }
+          ```
 
 ---

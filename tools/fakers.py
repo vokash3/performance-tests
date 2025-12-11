@@ -68,7 +68,7 @@ class Fake:
 
         :return: Случайная фамилия.
         """
-        return self.faker.last_name()
+        return self.faker.last_name_male()
 
     def first_name(self) -> str:
         """
@@ -76,7 +76,7 @@ class Fake:
 
         :return: Случайное имя.
         """
-        return self.faker.first_name()
+        return self.faker.first_name_male()
 
     def middle_name(self) -> str:
         """
@@ -84,7 +84,7 @@ class Fake:
 
         :return: Случайное отчество.
         """
-        return self.faker.first_name()
+        return self.faker.first_name_male()
 
     def phone_number(self) -> str:
         """
@@ -114,4 +114,4 @@ class Fake:
 
 
 # Создаем экземпляр класса Fake с использованием Faker
-fake = Fake(faker=Faker())
+fake = Fake(faker=Faker("ru_RU"))
