@@ -74,3 +74,12 @@ def build_documents_gateway_locust_http_client(environment: Environment) -> Docu
     :return: экземпляр DocumentsGatewayHTTPClient с хуками сбора метрик.
     """
     return DocumentsGatewayHTTPClient(client=build_gateway_locust_http_client(environment))
+
+
+if __name__ == '__main__':
+    """
+    Тестовый запуск клиента для Locust.
+    Пустой Locust env 
+    """
+    client = build_documents_gateway_locust_http_client(environment=Environment())
+    print(client.get_tariff_document("c4d14cc2-6764-4305-b7f1-1f643072e4d4"))
