@@ -4,7 +4,7 @@ import random
 import httpx
 from httpx import Response, QueryParams
 
-from clients.http.client import HTTPClient
+from clients.http.client import HTTPClient, HTTPClientExtensions
 from clients.http.gateway.client import build_gateway_http_client
 from clients.http.gateway.operations.schema import *
 from clients.http.gateway.users.schema import CreateUserRequestSchema
@@ -25,7 +25,8 @@ class OperationsGatewayHTTPClient(HTTPClient):
         :return: Объект httpx.Response с данными об операции.
         """
         operation_id = path.operation_id
-        return self.get(f"/api/v1/operations/{operation_id}")
+        return self.get(f"/api/v1/operations/{operation_id}",
+                        extensions=HTTPClientExtensions(route="/api/v1/operations/{operation_id}"))
 
     def get_operation(self, operation_id: str) -> GetOperationResponseSchema:
         """
@@ -46,7 +47,8 @@ class OperationsGatewayHTTPClient(HTTPClient):
         :return: Объект httpx.Response с данными чека по операции.
         """
         operation_id = path.operation_id
-        return self.get(f"/api/v1/operations/operation-receipt/{operation_id}")
+        return self.get(f"/api/v1/operations/operation-receipt/{operation_id}",
+                        extensions=HTTPClientExtensions(route="/api/v1/operations/operation-receipt/{operation_id}"))
 
     def get_operation_receipt(self, operation_id: str) -> GetOperationReceiptResponseSchema:
         """
@@ -66,7 +68,8 @@ class OperationsGatewayHTTPClient(HTTPClient):
         :return: Объект httpx.Response со списком операций.
         """
         return self.get("/api/v1/operations", params=QueryParams(
-            GetOperationsQuerySchema.model_dump(query, by_alias=True)))
+            GetOperationsQuerySchema.model_dump(query, by_alias=True)),
+                        extensions=HTTPClientExtensions(route="/api/v1/operations"))
 
     def get_operations(self, account_id: str) -> GetOperationsResponseSchema:
         """
@@ -86,7 +89,8 @@ class OperationsGatewayHTTPClient(HTTPClient):
         :return: Объект httpx.Response с агрегированной статистикой по операциям.
         """
         return self.get("/api/v1/operations/operations-summary",
-                        params=QueryParams(GetOperationsSummaryQuerySchema.model_dump(query, by_alias=True)))
+                        params=QueryParams(GetOperationsSummaryQuerySchema.model_dump(query, by_alias=True)),
+                        extensions=HTTPClientExtensions(route="/api/v1/operations/operations-summary"))
 
     def get_operations_summary(self, account_id: str) -> GetOperationsSummaryResponseSchema:
         """

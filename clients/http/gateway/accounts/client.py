@@ -2,7 +2,7 @@
 
 from httpx import Response, QueryParams
 
-from clients.http.client import HTTPClient
+from clients.http.client import HTTPClient, HTTPClientExtensions
 from clients.http.gateway.accounts.schema import GetAccountsQuerySchema, OpenDepositAccountRequestSchema, \
     OpenSavingsAccountRequestSchema, OpenDebitCardAccountRequestSchema, OpenCreditCardAccountRequestSchema, \
     GetAccountsResponseSchema, OpenDepositAccountResponseSchema, OpenSavingsAccountResponseSchema, \
@@ -22,7 +22,8 @@ class AccountsGatewayHTTPClient(HTTPClient):
         :param query: Словарь с параметрами запроса, например: {'user_id': '123'}.
         :return: Объект httpx.Response с данными о счетах.
         """
-        return self.get("/api/v1/accounts", params=QueryParams(query.model_dump()))
+        return self.get("/api/v1/accounts", params=QueryParams(query.model_dump()), extensions=HTTPClientExtensions(
+            route="/api/v1/accounts"))  # Явно передаём логическое имя маршрута
 
     def open_deposit_account_api(self, request: OpenDepositAccountRequestSchema) -> Response:
         """
