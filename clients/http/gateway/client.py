@@ -1,4 +1,13 @@
+import logging
+
 from httpx import Client
+from locust.env import Environment
+
+# перехват
+from clients.http.event_hooks.locust_event_hook import (
+    locust_request_event_hook,  # Хук для отслеживания начала запроса
+    locust_response_event_hook  # Хук для сбора метрик по завершении запроса
+)
 
 
 def build_gateway_http_client() -> Client:
@@ -8,3 +17,42 @@ def build_gateway_http_client() -> Client:
     :return: Готовый к использованию объект httpx.Client.
     """
     return Client(timeout=100, base_url="http://155.212.171.137:8003")
+
+
+def build_gateway_locust_http_client(environment: Environment) -> Client:
+    """
+    HTTP-клиент, предназначенный специально для нагрузочного тестирования с помощью Locust.
+
+    Что делает этот код?
+        Импортируются хуки, определённые ранее в locust_event_hook.py.
+        Они обрабатывают события request и response от httpx.Client.
+        build_gateway_http_client — стандартный билдер, без привязки к Locust.
+        build_gateway_locust_http_client — специализированный билдер, который:
+        принимает объект Environment от Locust;
+        подключает хуки, необходимые для сбора статистики;
+        возвращает готовый httpx.Client, полностью интегрированный с Locust.
+
+    Отличается от обычного клиента тем, что:
+    - добавляет хук `locust_request_event_hook` для фиксации времени начала запроса,
+    - добавляет хук `locust_response_event_hook`, который вычисляет метрики
+    (время ответа, длину ответа и т.д.) и отправляет их в Locust через `environment.events.request`.
+
+    Таким образом, данный клиент автоматически репортит статистику в Locust
+    при каждом выполненном HTTP-запросе.
+
+
+    :param environment: Объект окружения Locust, необходим для генерации событий метрик.
+    :return: httpx.Client с подключёнными хуками под нагрузочное тестирование.
+    """
+    # Подавляем INFO-логи httpx (например: "HTTP Request: GET ... 200 OK")
+    # Это избавляет консоль от лишнего вывода при высоконагруженных тестах
+    logging.getLogger("httpx").setLevel(logging.WARNING)
+
+    return Client(
+        timeout=100,
+        base_url="http://155.212.171.137:8003",
+        event_hooks={
+            "request": [locust_request_event_hook],  # Отмечаем время начала запроса
+            "response": [locust_response_event_hook(environment)]  # Собираем метрики и передаём их в Locust
+        }
+    )
