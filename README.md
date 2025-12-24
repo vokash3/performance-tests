@@ -1102,3 +1102,33 @@ __Отдельный тестовый стенд развёрнут на вир�
       признак того, что система достигла предела пропускной способности и дальше накапливает очередь.
 
 ---
+
+10.2 Практика: Создание билдеров для HTTP API клиентов Locust (OperationsGatewayHTTPClient, DocumentsGatewayHTTPClient)
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/e/eb/Locust-logo.png" alt="locust_logo" height="48" width="200">
+
+`Без запуска`
+
+---
+
+# 10.3 Task – Практика: Применение HTTP API клиентов в нагрузочном сценарии (UsersGatewayHTTPClient, AccountsGatewayHTTPClient)
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/e/eb/Locust-logo.png" alt="locust_logo" height="48" width="200">
+
+- Запускаем
+    ```bash
+    python -m locust -f locust_open_debit_card_account.py \
+  --class-picker \
+  --processes 2 \
+  --csv reports/locust_api_client_open_debit_card_account_report.csv \
+  --csv-full-history --json-file reports/locust_api_client_open_debit_card_account_report \
+  --html reports/locust_api_client_open_debit_card_account_report.html \
+  -u 300 -r 10 -t 1m
+    ```
+- В [WebUI]( http://0.0.0.0:8089) нажимаем button **START**
+- Через 1 минуту – тест завершается STOPPED.
+- В терминале CTR+C
+- Ознакамливаемся с отчётом
+
+**`Уже готовый отчёт лежит в reports/locust_api_client_open_debit_card_account_report.html`**
+---

@@ -1,33 +1,32 @@
 # python -m locust -f locust_open_debit_card_account.py --class-picker --processes 2 --csv reports/report.csv --csv-full-history --json-file reports/report --html reports/report_$(date +"%d%m%Y_%H%M").html -u 300 -r 10 -t 1m
 
-from locust import HttpUser, between, task, constant_pacing
+from locust import task, constant_pacing, User
 
-from tools.fakers import fake  # генератор случайных данных
+from clients.http.gateway.accounts.client import AccountsGatewayHTTPClient, build_accounts_gateway_locust_http_client
+from clients.http.gateway.accounts.schema import OpenDebitCardAccountResponseSchema
+from clients.http.gateway.users.client import build_users_gateway_locust_http_client, UsersGatewayHTTPClient
+from clients.http.gateway.users.schema import CreateUserResponseSchema
 
 
-class OpenDebitCardAccountScenarioUser(HttpUser):
+class OpenDebitCardAccountScenarioUser(User):
     wait_time = constant_pacing(1)
     host = "http://155.212.171.137:8003"
 
-    # В этой переменной будем хранить данные созданного пользователя
-    user_data: dict
+    users_gateway_client: UsersGatewayHTTPClient
+    create_user_response: CreateUserResponseSchema
+
+    accounts_gateway_client: AccountsGatewayHTTPClient
+    open_debit_card_account_response: OpenDebitCardAccountResponseSchema
 
     def on_start(self) -> None:
         """
-        Метод on_start вызывается один раз при запуске каждой сессии виртуального пользователя.
-        Здесь мы создаем нового пользователя, отправляя POST-запрос к /api/v1/users.
+        Выполняется при старте виртуального пользователя.
+        Создание нового пользователя в системе и сохранение полученных объектов в self.create_user_response
+        через кастомный клиент UsersGatewayHTTPClient
+        :return:
         """
-        request = {
-            "email": fake.email(),
-            "lastName": fake.last_name(),
-            "firstName": fake.first_name(),
-            "middleName": fake.middle_name(),
-            "phoneNumber": fake.phone_number()
-        }
-        response = self.client.post("/api/v1/users", json=request)
-
-        # Сохраняем полученные данные, включая ID пользователя
-        self.user_data = response.json()
+        self.users_gateway_client = build_users_gateway_locust_http_client(self.environment)
+        self.create_user_response = self.users_gateway_client.create_user()
 
     @task
     def open_debit_card_account(self):
@@ -37,9 +36,8 @@ class OpenDebitCardAccountScenarioUser(HttpUser):
         {
             "userId": str(uuid4)
         }
+        через кастомный клиент AccountsGatewayHTTPClient
         """
-        self.client.post(
-            f"/api/v1/accounts/open-debit-card-account",
-            name="/api/v1/accounts/open-debit-card-account",  # Явное указание имени группы запросов
-            json={"userId": self.user_data['user']['id']},
-        )
+        self.accounts_gateway_client = build_accounts_gateway_locust_http_client(self.environment)
+        self.open_debit_card_account_response = self.accounts_gateway_client.open_debit_card_account(
+            self.create_user_response.user.id)
