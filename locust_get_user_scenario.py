@@ -1,4 +1,4 @@
-# python -m locust -f locust_get_user_scenario.py --class-picker --processes 2 --csv report.csv --csv-full-history --json --json-file report --html report.html -u 300 -r 10 -t 1m
+# python -m locust -f locust_get_user_scenario.py --class-picker --processes 2 --csv reports/locust_get_user_scenario.csv --csv-full-history --json --json-file reports/locust_get_user_scenario --html reports/locust_get_user_scenario.html -u 300 -r 30 -t 1m
 
 from locust import HttpUser, between, task, constant_pacing, User
 
