@@ -23,7 +23,7 @@ class AccountsGatewayHTTPClient(HTTPClient):
         :param query: Словарь с параметрами запроса, например: {'user_id': '123'}.
         :return: Объект httpx.Response с данными о счетах.
         """
-        return self.get("/api/v1/accounts", params=QueryParams(query.model_dump()), extensions=HTTPClientExtensions(
+        return self.get("/api/v1/accounts", params=QueryParams(query.model_dump(by_alias=True)), extensions=HTTPClientExtensions(
             route="/api/v1/accounts"))  # Явно передаём логическое имя маршрута
 
     def open_deposit_account_api(self, request: OpenDepositAccountRequestSchema) -> Response:

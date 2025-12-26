@@ -34,7 +34,8 @@ class OpenDepositAccountRequestSchema(BaseModel):
     """
     Pydantic Model – Структура данных для открытия депозитного счета.
     """
-    userId: str
+    model_config = ConfigDict(populate_by_name=True)
+    user_id: str = Field(alias="userId")
 
 
 # Добавили описание структуры ответа открытия депозитного счета
