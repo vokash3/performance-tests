@@ -2,10 +2,11 @@
 # python -m locust -f grpc_locust_get_accounts.py --headless --processes 4 --html reports/grpc_locust_get_accounts.html -u 50 -r 1 -t 1m
 
 
-from locust import task, constant_pacing, User
+from locust import task
 
 from clients.grpc.gateway.locust import GatewayGRPCTaskSet
 from contracts.services.users.rpc_create_user_pb2 import CreateUserResponse
+from tools.locust.user import LocustBaseUser
 
 
 class GetAccountsTaskSet(GatewayGRPCTaskSet):
@@ -52,10 +53,8 @@ class GetAccountsTaskSet(GatewayGRPCTaskSet):
         self.accounts_gateway_client.get_accounts(self.create_user_response.user.id)
 
 
-class GetAccountsScenarioUser(User):
+class GetAccountsScenarioUser(LocustBaseUser):
     """
     Пользователь Locust, исполняющий задачи из GetAccountsTaskSet.
     """
-    host = "localhost"
     tasks = [GetAccountsTaskSet]
-    wait_time = constant_pacing(1)  # Шаг – вместо случайной задержки

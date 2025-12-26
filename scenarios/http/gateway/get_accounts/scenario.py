@@ -1,9 +1,10 @@
 # locust --config=./scenarios/http/gateway/get_accounts/v1.0.conf
 # python -m locust -f locust_get_accounts.py --headless --processes 4 --html reports/locust_get_accounts.html -u 50 -r 1 -t 1m
-from locust import task, User, between, run_single_user, constant_pacing
+from locust import task
 
 from clients.http.gateway.locust import GatewayHTTPTaskSet
 from clients.http.gateway.users.schema import CreateUserResponseSchema
+from tools.locust.user import LocustBaseUser
 
 
 class GetAccountsTaskSet(GatewayHTTPTaskSet):
@@ -49,10 +50,8 @@ class GetAccountsTaskSet(GatewayHTTPTaskSet):
         self.accounts_gateway_client.get_accounts(user_id=self.create_user_response.user.id)
 
 
-class GetAccountsScenarioUser(User):
+class GetAccountsScenarioUser(LocustBaseUser):
     """
     Пользователь Locust, исполняющий задачи из GetAccountsTaskSet.
     """
-    host = "localhost"
     tasks = [GetAccountsTaskSet]
-    wait_time = constant_pacing(1)  # Шаг – вместо случайной задержки
