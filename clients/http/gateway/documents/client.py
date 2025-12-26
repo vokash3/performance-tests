@@ -5,7 +5,7 @@ from locust.env import Environment
 
 from clients.http.client import HTTPClient, HTTPClientExtensions
 from clients.http.gateway.client import build_gateway_http_client, build_gateway_locust_http_client
-from clients.http.gateway.documents.schema import GetTariffDocumentResponseSchema
+from clients.http.gateway.documents.schema import GetTariffDocumentResponseSchema, GetContractDocumentResponseSchema
 
 
 class DocumentsGatewayHTTPClient(HTTPClient):
@@ -42,14 +42,14 @@ class DocumentsGatewayHTTPClient(HTTPClient):
         response = self.get_tariff_document_api(account_id)
         return GetTariffDocumentResponseSchema.model_validate_json(response.text)
 
-    def get_contract_document(self, account_id: str) -> GetTariffDocumentResponseSchema:
+    def get_contract_document(self, account_id: str) -> GetContractDocumentResponseSchema:
         """
         Обёртка для get_contract_document_api: Получить контракт по счету.
         :param account_id: str – Идентификатор счета (например, "c4d14cc2-6764-4305-b7f1-1f643072e4d4").
         :return: JSON -> GetContractDocumentResponseSchema – PyDantic модель
         """
         response = self.get_contract_document_api(account_id)
-        return GetTariffDocumentResponseSchema.model_validate_json(response.text)
+        return GetContractDocumentResponseSchema.model_validate_json(response.text)
 
 
 # Добавляем builder для DocumentsGatewayHTTPClient
