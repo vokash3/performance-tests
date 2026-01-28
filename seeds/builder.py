@@ -125,6 +125,7 @@ class SeedsBuilder:
         """
         Открывает дебетовый счёт для пользователя и при необходимости:
         - выпускает физические карты
+        - выпускает виртуальные
         - выполняет операции пополнения (top-up)
         - выполняет операции покупки
 
@@ -145,6 +146,10 @@ class SeedsBuilder:
                 self.build_physical_card_result(user_id=user_id, account_id=response.account.id)
                 for _ in range(plan.physical_cards.count)
             ],
+            virtual_cards=[
+                self.build_virtual_card_result(user_id=user_id, account_id=response.account.id)
+                for _ in range(plan.virtual_cards.count)
+            ],
             top_up_operations=[
                 self.build_top_up_operation_result(card_id=card_id, account_id=account_id)
                 for _ in range(plan.top_up_operations.count)
@@ -159,6 +164,7 @@ class SeedsBuilder:
         """
         Открывает кредитный счёт и выполняет действия согласно плану:
         - выпускает физические карты
+        - выпускает виртуальные карты
         - выполняет операции пополнения (top-up)
         - выполняет операции покупки
 
@@ -179,6 +185,10 @@ class SeedsBuilder:
                 self.build_physical_card_result(user_id=user_id, account_id=account_id)
                 for _ in range(plan.physical_cards.count)
             ],
+            virtual_cards=[
+                self.build_virtual_card_result(user_id=user_id, account_id=response.account.id)
+                for _ in range(plan.virtual_cards.count)
+            ],
             top_up_operations=[
                 self.build_top_up_operation_result(card_id=card_id, account_id=account_id)
                 for _ in range(plan.top_up_operations.count)
@@ -188,6 +198,21 @@ class SeedsBuilder:
                 for _ in range(plan.purchase_operations.count)
             ]
         )
+
+    def build_virtual_card_result(self, user_id: str, account_id: str) -> SeedCardResult:
+        """
+        Выпускает виртуальную карту для заданного пользователя и счёта
+        Args:
+            user_id: Идентификатор пользователя
+            account_id: Идентификатор счёт
+        Returns:
+            SeedCardResult: Результат с ID выпущенной вирт карты
+        """
+        response = self.cards_gateway_client.issue_virtual_card(
+            user_id=user_id,
+            account_id=account_id
+        )
+        return SeedCardResult(card_id=response.card.id)
 
     def build_user(self, plan: SeedUsersPlan) -> SeedUserResult:
         """
