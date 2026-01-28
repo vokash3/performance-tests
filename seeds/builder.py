@@ -128,6 +128,8 @@ class SeedsBuilder:
         - выпускает виртуальные
         - выполняет операции пополнения (top-up)
         - выполняет операции покупки
+        - выполняет операции перевода
+        - выполняет операции снятия наличных
 
         Args:
             plan: План создания дебетового счёта (кол-во карт, операций и т.п.)
@@ -157,6 +159,14 @@ class SeedsBuilder:
             purchase_operations=[
                 self.build_purchase_operation_result(card_id=card_id, account_id=account_id)
                 for _ in range(plan.purchase_operations.count)
+            ],
+            transfer_operations=[
+                self.build_transfer_operation_result(card_id=card_id, account_id=account_id)
+                for _ in range(plan.transfer_operations.count)
+            ],
+            cash_withdrawal_operations=[
+                self.build_cash_withdrawal_operation_result(card_id=card_id, account_id=account_id)
+                for _ in range(plan.cash_withdrawal_operations.count)
             ]
         )
 
@@ -167,6 +177,8 @@ class SeedsBuilder:
         - выпускает виртуальные карты
         - выполняет операции пополнения (top-up)
         - выполняет операции покупки
+        - выполняет операции перевода
+        - выполняет операции снятия наличных
 
         Args:
             plan: План создания кредитного счёта
@@ -196,6 +208,14 @@ class SeedsBuilder:
             purchase_operations=[
                 self.build_purchase_operation_result(card_id=card_id, account_id=account_id)
                 for _ in range(plan.purchase_operations.count)
+            ],
+            transfer_operations=[
+                self.build_transfer_operation_result(card_id=card_id, account_id=account_id)
+                for _ in range(plan.transfer_operations.count)
+            ],
+            cash_withdrawal_operations=[
+                self.build_cash_withdrawal_operation_result(card_id=card_id, account_id=account_id)
+                for _ in range(plan.cash_withdrawal_operations.count)
             ]
         )
 
@@ -213,6 +233,38 @@ class SeedsBuilder:
             account_id=account_id
         )
         return SeedCardResult(card_id=response.card.id)
+
+    def build_transfer_operation_result(self, card_id: str, account_id: str) -> SeedOperationResult:
+        """
+        Выполняет операцию перевода по карте.
+
+        Args:
+            card_id: Идентификатор карты
+            account_id: Идентификатор счёта
+
+        Returns:
+            SeedOperationResult: Результат с ID выполненной операции
+        """
+        response = self.operations_gateway_client.make_transfer_operation(
+            card_id=card_id,
+            account_id=account_id
+        )
+        return SeedOperationResult(operation_id=response.operation.id)
+
+    def build_cash_withdrawal_operation_result(self, card_id: str, account_id: str) -> SeedOperationResult:
+        """
+        Выполняет операцию снятия наличных по карте
+        Args:
+            card_id: Идентификатор карты
+            account_id: Идентификатор счёт
+        Returns:
+            SeedOperationResult: Результат с ID выполненной операции
+        """
+        response = self.operations_gateway_client.make_cash_withdrawal_operation(
+            card_id=card_id,
+            account_id=account_id
+        )
+        return SeedOperationResult(operation_id=response.operation.id)
 
     def build_user(self, plan: SeedUsersPlan) -> SeedUserResult:
         """
