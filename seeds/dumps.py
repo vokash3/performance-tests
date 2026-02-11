@@ -19,6 +19,8 @@ def save_seeds_result(result: SeedsResult, scenario: str):
     with open(f"./dumps/{scenario}_seeds.json", 'w+', encoding="utf-8") as file:
         file.write(result.model_dump_json())
 
+    print(f"Дамп сидинга сохранён: ./dumps/{scenario}_seeds.json")
+
 
 def load_seeds_result(scenario: str) -> SeedsResult:
     """
