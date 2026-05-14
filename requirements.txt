@@ -5,3 +5,5 @@ grpcio
 grpcio-tools
 gevent
 locust
+fastapi
+uvicorn
