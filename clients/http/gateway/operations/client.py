@@ -10,6 +10,7 @@ from clients.http.gateway.client import build_gateway_http_client, build_gateway
 from clients.http.gateway.operations.schema import *
 from clients.http.gateway.users.schema import CreateUserRequestSchema
 from helpers.json_output import JSONOutput
+from tools.routes import APIRoutes
 
 
 # ====== КЛИЕНТ (ОСНОВНОЙ КЛАСС) == ДЛЯ ВЗАИМОДЕЙСТВИЯ С /api/v1/operations ====
@@ -26,8 +27,8 @@ class OperationsGatewayHTTPClient(HTTPClient):
         :return: Объект httpx.Response с данными об операции.
         """
         operation_id = path.operation_id
-        return self.get(f"/api/v1/operations/{operation_id}",
-                        extensions=HTTPClientExtensions(route="/api/v1/operations/{operation_id}"))
+        return self.get(f"{APIRoutes.OPERATIONS}/{operation_id}",
+                        extensions=HTTPClientExtensions(route=f"{APIRoutes.OPERATIONS}/{{operation_id}}"))
 
     def get_operation(self, operation_id: str) -> GetOperationResponseSchema:
         """
@@ -48,8 +49,8 @@ class OperationsGatewayHTTPClient(HTTPClient):
         :return: Объект httpx.Response с данными чека по операции.
         """
         operation_id = path.operation_id
-        return self.get(f"/api/v1/operations/operation-receipt/{operation_id}",
-                        extensions=HTTPClientExtensions(route="/api/v1/operations/operation-receipt/{operation_id}"))
+        return self.get(f"{APIRoutes.OPERATIONS}/operation-receipt/{operation_id}",
+                        extensions=HTTPClientExtensions(route=f"{APIRoutes.OPERATIONS}/operation-receipt/{{operation_id}}"))
 
     def get_operation_receipt(self, operation_id: str) -> GetOperationReceiptResponseSchema:
         """
@@ -68,9 +69,9 @@ class OperationsGatewayHTTPClient(HTTPClient):
         :param query: PyDantic модель параметров запроса, например: {'account_id': '123'}.
         :return: Объект httpx.Response со списком операций.
         """
-        return self.get("/api/v1/operations", params=QueryParams(
+        return self.get(APIRoutes.OPERATIONS, params=QueryParams(
             GetOperationsQuerySchema.model_dump(query, by_alias=True)),
-                        extensions=HTTPClientExtensions(route="/api/v1/operations"))
+                        extensions=HTTPClientExtensions(route=APIRoutes.OPERATIONS))
 
     def get_operations(self, account_id: str) -> GetOperationsResponseSchema:
         """
@@ -89,9 +90,9 @@ class OperationsGatewayHTTPClient(HTTPClient):
         :param query: PyDantic модель параметров запроса, например: {'account_id': '123'}.
         :return: Объект httpx.Response с агрегированной статистикой по операциям.
         """
-        return self.get("/api/v1/operations/operations-summary",
+        return self.get(f"{APIRoutes.OPERATIONS}/operations-summary",
                         params=QueryParams(GetOperationsSummaryQuerySchema.model_dump(query, by_alias=True)),
-                        extensions=HTTPClientExtensions(route="/api/v1/operations/operations-summary"))
+                        extensions=HTTPClientExtensions(route=f"{APIRoutes.OPERATIONS}/operations-summary"))
 
     def get_operations_summary(self, account_id: str) -> GetOperationsSummaryResponseSchema:
         """
@@ -130,7 +131,7 @@ class OperationsGatewayHTTPClient(HTTPClient):
         :param request: PyDantic модель BaseOperationRequestSchema,
         :return: Объект httpx.Response с результатом создания операции.
         """
-        return self.post("/api/v1/operations/make-top-up-operation", json=request.model_dump(by_alias=True))
+        return self.post(f"{APIRoutes.OPERATIONS}/make-top-up-operation", json=request.model_dump(by_alias=True))
 
     def make_top_up_operation(self, card_id: str, account_id: str) -> MakeTopUpOperationResponseSchema:
         """
@@ -150,7 +151,7 @@ class OperationsGatewayHTTPClient(HTTPClient):
         :param request: PyDantic модель BaseOperationRequestSchema,
         :return: Объект httpx.Response с результатом создания операции.
         """
-        return self.post("/api/v1/operations/make-cashback-operation", json=request.model_dump(by_alias=True))
+        return self.post(f"{APIRoutes.OPERATIONS}/make-cashback-operation", json=request.model_dump(by_alias=True))
 
     def make_cashback_operation(self, card_id: str, account_id: str, amount: float = 55.77,
                                 status: OperationStatus = OperationStatus.COMPLETED) -> MakeCashbackOperationResponseSchema:
@@ -171,7 +172,7 @@ class OperationsGatewayHTTPClient(HTTPClient):
         :param request: PyDantic модель BaseOperationRequestSchema,
         :return: Объект httpx.Response с результатом создания операции.
         """
-        return self.post("/api/v1/operations/make-transfer-operation", json=request.model_dump(by_alias=True))
+        return self.post(f"{APIRoutes.OPERATIONS}/make-transfer-operation", json=request.model_dump(by_alias=True))
 
     def make_transfer_operation(self, card_id: str, account_id: str, amount: float = 55.77,
                                 status: OperationStatus = OperationStatus.COMPLETED) -> MakeTransferOperationResponseSchema:
@@ -193,7 +194,7 @@ class OperationsGatewayHTTPClient(HTTPClient):
                         дополненный полями category.
         :return: Объект httpx.Response с результатом создания операции.
         """
-        return self.post("/api/v1/operations/make-purchase-operation", json=request.model_dump(by_alias=True))
+        return self.post(f"{APIRoutes.OPERATIONS}/make-purchase-operation", json=request.model_dump(by_alias=True))
 
     def make_purchase_operation(self, card_id: str, account_id: str, amount: float = 55.77,
                                 status: OperationStatus = OperationStatus.COMPLETED,
@@ -216,7 +217,7 @@ class OperationsGatewayHTTPClient(HTTPClient):
                         дополненный полями billId и provider.
         :return: Объект httpx.Response с результатом создания операции.
         """
-        return self.post("/api/v1/operations/make-bill-payment-operation", json=request.model_dump(by_alias=True))
+        return self.post(f"{APIRoutes.OPERATIONS}/make-bill-payment-operation", json=request.model_dump(by_alias=True))
 
     def make_bill_payment_operation(self, card_id: str, account_id: str, amount: float = 55.77,
                                     status: OperationStatus = OperationStatus.COMPLETED) -> MakeBillPaymentOperationResponseSchema:
@@ -239,7 +240,7 @@ class OperationsGatewayHTTPClient(HTTPClient):
         :param request: PyDantic модель BaseOperationRequestSchema,
         :return: Объект httpx.Response с результатом создания операции.
         """
-        return self.post("/api/v1/operations/make-cash-withdrawal-operation", json=request.model_dump(by_alias=True))
+        return self.post(f"{APIRoutes.OPERATIONS}/make-cash-withdrawal-operation", json=request.model_dump(by_alias=True))
 
     def make_cash_withdrawal_operation(self, card_id: str, account_id: str, amount: float = 55.77,
                                        status: OperationStatus = OperationStatus.COMPLETED) -> MakeCashWithdrawalOperationResponseSchema:
