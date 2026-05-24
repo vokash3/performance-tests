@@ -8,3 +8,4 @@ locust
 fastapi
 uvicorn
 pytest
+pydantic-settings
