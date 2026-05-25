@@ -6,3 +6,9 @@
 *.iml
 out
 gen
+*venv
+.continue
+*.html
+dumps
+report*
+__pycache__
